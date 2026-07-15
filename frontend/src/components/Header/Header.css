@@ -1,0 +1,40 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 2rem;
+  background-color: #141414;
+}
+
+.header__logo {
+  color: #e50914;
+  font-size: 2rem;
+}
+
+.header__nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.header__nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.header__nav a:hover {
+  color: #b3b3b3;
+}
+.app {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.main-content {
+  padding: 20px 60px;
+}
+
+.main-content h2 {
+  margin: 0;
+  font-size: 2.5rem;
+}

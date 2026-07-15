@@ -1,0 +1,98 @@
+.movie-card {
+  position: relative;
+  opacity: 1;
+
+  width: 220px;
+  height: 320px;
+
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 30px;
+
+  }
+
+.movie-card:hover {
+  transform: scale(1.05) translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.45);
+}
+
+/* Image */
+.movie-image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition: transform 0.3s ease;
+}
+
+/* Léger zoom de l'image */
+.movie-card:hover .movie-image {
+  transform: scale(1.05);
+}
+
+/* Voile sombre */
+.movie-card::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.05) 20%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+
+  opacity: 0;
+
+  transition: opacity 0.3s ease;
+
+  pointer-events: none;
+}
+
+/* Apparition du voile */
+.movie-card:hover::after {
+  opacity: 1;
+}
+
+/* Texte */
+.movie-overlay {
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding: 15px;
+  box-sizing: border-box;
+
+  opacity: 0;
+
+  transform: translateX(-15px);
+
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* Apparition du texte */
+.movie-card:hover .movie-overlay {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.movie-overlay h3 {
+  margin-bottom: 10px;
+}
+
+.movie-row-list {
+  padding-left: 20px;
+}

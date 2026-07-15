@@ -1,0 +1,78 @@
+.app {
+  min-height: 100vh;
+  background-color: #111;
+  color: white;
+}
+
+.main-content {
+  min-height: 100vh;
+  margin-left: 120px;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+
+  min-height: 65vh;
+  padding: 60px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.95) 0%,
+      rgba(0, 0, 0, 0.65) 45%,
+      rgba(0, 0, 0, 0.15) 100%
+    ),
+    url("/hero-background.jpg") center / cover no-repeat;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero-category {
+  color: #e50914;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.hero h1 {
+  margin: 15px 0;
+  font-size: 4rem;
+}
+
+.hero-description {
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.hero-actions button {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 5px;
+
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.play-button {
+  color: black;
+  background-color: white;
+}
+
+.info-button {
+  color: white;
+  background-color: rgba(109, 109, 110, 0.7);
+}
+
+.movies-section {
+  padding: 30px 60px;
+}

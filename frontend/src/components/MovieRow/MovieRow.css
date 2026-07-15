@@ -1,0 +1,33 @@
+.movie-row {
+  padding: 40px 48px;
+}
+
+.movie-row-title {
+  margin: 0 0 24px;
+  color: white;
+  font-size: 1.8rem;
+}
+
+.movie-row-list {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px 0 25px;
+}
+
+.movie-row-list::-webkit-scrollbar {
+  height: 8px;
+}
+
+.movie-row-list::-webkit-scrollbar-thumb {
+  background-color: #444;
+  border-radius: 10px;
+}
+
+.movie-row-list::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.movie-row-list .movie-card {
+  flex: 0 0 auto;
+}

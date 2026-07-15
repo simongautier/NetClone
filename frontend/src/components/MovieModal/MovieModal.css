@@ -1,0 +1,139 @@
+.movie-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+}
+
+.movie-modal-content {
+  position: relative;
+
+  display: flex;
+  align-items: stretch;
+
+  width: min(900px, 90vw);
+  max-height: 80vh;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+
+  background: rgba(35, 35, 35, 0.88);
+  color: white;
+
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+}
+
+.movie-modal-image {
+  width: 38%;
+  min-width: 280px;
+
+  object-fit: cover;
+}
+
+.movie-modal-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 48px 40px;
+}
+
+.movie-modal-category {
+  margin: 0 0 12px;
+
+  color: #5609e5;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.movie-modal-info h2 {
+  margin: 0 0 18px;
+
+  font-size: 2.5rem;
+}
+
+.movie-modal-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  margin-bottom: 24px;
+
+  color: #d0d0d0;
+}
+
+.movie-modal-description {
+  margin: 0 0 30px;
+
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.movie-modal-play {
+  align-self: flex-start;
+
+  padding: 12px 22px;
+
+  border: none;
+  border-radius: 6px;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.movie-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 2;
+
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 50%;
+
+  color: white;
+  background: rgba(0, 0, 0, 0.55);
+
+  font-size: 2rem;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.movie-modal-close:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 760px) {
+  .movie-modal-content {
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .movie-modal-image {
+    width: 100%;
+    min-width: 0;
+    height: 360px;
+  }
+
+  .movie-modal-info {
+    padding: 30px 24px;
+  }
+}
