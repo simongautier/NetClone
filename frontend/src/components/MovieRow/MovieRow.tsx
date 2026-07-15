@@ -1,9 +1,6 @@
 import type { Movie } from "../../type/Movie";
 import MovieCard from "../MovieCard/MovieCard";
 import "./MovieRow.css";
-import { useState } from "react";
-import { useEffect } from "react";
-import { movies } from "../../data/Movies";
 
 type MovieRowProps = {
   title: string;
