@@ -24,24 +24,24 @@ function MovieModal({ movie, onClose }: MovieModalProps) {
 
         <img
           className="movie-modal-image"
-          src={movie.image}
+          src={movie.poster_path ?? undefined}
           alt={`Affiche de ${movie.title}`}
         />
 
         <div className="movie-modal-info">
-          <p className="movie-modal-category">{movie.category}</p>
-
           <h2>{movie.title}</h2>
 
           <div className="movie-modal-details">
-            <span>{movie.year}</span>
+            <span>{movie.release_date.substring(0, 4)}</span>
             <span>•</span>
-            <span>{movie.duration}</span>
+{movie.runtime && <span>{movie.runtime} min</span>}
             <span>•</span>
-            <span>⭐ {movie.rating}</span>
+            <span>⭐ {movie.vote_average.toFixed(1)}</span>
           </div>
 
-          <p className="movie-modal-description">{movie.description}</p>
+          <p className="movie-modal-description">
+            {movie.overview}
+          </p>
 
           <button type="button" className="movie-modal-play">
             ▶ Lecture

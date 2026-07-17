@@ -13,21 +13,14 @@ function MovieCard({ movie, onSelect }: MovieCardProps) {
       onClick={() => onSelect(movie)}
     >
       <img
-        src={movie.image}
+        src={movie.poster_path ?? undefined}
         alt={movie.title}
         className="movie-image"
       />
 
       <div className="movie-overlay">
         <h3>{movie.title}</h3>
-
-        <p>
-          {movie.year} • {movie.duration}
-        </p>
-
-        <p>{movie.category}</p>
-
-        <p>⭐ {movie.rating}</p>
+        <p>⭐ {movie.vote_average.toFixed(1)}</p>
       </div>
     </article>
   );

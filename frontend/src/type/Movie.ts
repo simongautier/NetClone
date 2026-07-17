@@ -1,16 +1,17 @@
-export interface Movie {
-    id: number;
-    title: string;
-    description: string;
-    year: number;
-    duration: string;
-    category: string;
-    rating: number;
-    image: string;
-    isLeaving?: boolean;
-}
+export type Genre = {
+  id: number;
+  name: string;
+};
 
-export type DisplayedMovie = {
-  movie: Movie;
-  isLeaving: boolean;
+export type Movie = {
+  id: number;
+  title: string;
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  release_date: string;
+  vote_average: number;
+
+  runtime?: number;
+  genres?: Genre[];
 };
