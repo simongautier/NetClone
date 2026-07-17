@@ -10,12 +10,14 @@
 }
 
 .search-input {
-  width: 100%;
-  max-width: 400px;
-  padding: 15px 20px;
+  width: 50%;
+  max-width: 200px;
+  max-height: 5px;
+  padding: 10px 10px;
+  margin-left: 2rem;
 
   border: none;
-  border-radius: 5px;
+  border-radius: 50px;
 
   font-size: 1rem;
 }
