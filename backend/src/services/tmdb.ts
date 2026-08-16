@@ -69,6 +69,71 @@ async function getPopularMovies(): Promise<TmdbMovie[]> {
   }));
 }
 
+type TmdbSeries = {
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  first_air_date: string;
+  vote_average: number;
+  episode_run_time?: number[] | undefined;
+  genres?: TmdbGenre[] | undefined;
+};
+
+async function getPopularSeries(): Promise<TmdbMovie[]> {
+  const response = await fetch(
+    `${TMDB_API_URL}/tv/popular?language=fr-FR&page=1`,
+    {
+      headers: getHeaders(),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch popular series from TMDB: ${response.status}`
+    );
+  }
+
+  const data = await response.json();
+
+  return data.results.map((series: TmdbSeries) => ({
+    id: series.id,
+    title: series.name,
+    overview: series.overview,
+    poster_path: buildImageUrl(series.poster_path, "w500"),
+    backdrop_path: buildImageUrl(series.backdrop_path, "original"),
+    release_date: series.first_air_date,
+    vote_average: series.vote_average,
+  }));
+}
+
+async function getSeriesDetails(id: number): Promise<TmdbMovie> {
+  const response = await fetch(`${TMDB_API_URL}/tv/${id}?language=fr-FR`, {
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch series details from TMDB: ${response.status}`
+    );
+  }
+
+  const series: TmdbSeries = await response.json();
+
+  return {
+    id: series.id,
+    title: series.name,
+    overview: series.overview,
+    poster_path: buildImageUrl(series.poster_path, "w500"),
+    backdrop_path: buildImageUrl(series.backdrop_path, "original"),
+    release_date: series.first_air_date,
+    vote_average: series.vote_average,
+    runtime: series.episode_run_time?.[0],
+    genres: series.genres,
+  };
+}
+
 async function getMovieDetails(id: number): Promise<TmdbMovie> {
   const response = await fetch(
     `${TMDB_API_URL}/movie/${id}?language=fr-FR`,
@@ -98,4 +163,4 @@ async function getMovieDetails(id: number): Promise<TmdbMovie> {
   };
 }
 
-export { getPopularMovies, getMovieDetails };
+export { getPopularMovies, getMovieDetails, getPopularSeries, getSeriesDetails };

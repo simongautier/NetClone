@@ -81,6 +81,11 @@
   line-height: 1.6;
 }
 
+.movie-modal-actions {
+  display: flex;
+  gap: 15px;
+}
+
 .movie-modal-play {
   align-self: flex-start;
 
@@ -93,6 +98,32 @@
   font-weight: 700;
 
   cursor: pointer;
+}
+
+.movie-modal-favorite {
+  align-self: flex-start;
+
+  padding: 12px 22px;
+
+  color: white;
+  background: rgba(109, 109, 110, 0.7);
+  border: none;
+  border-radius: 6px;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.movie-modal-favorite:hover {
+  background: rgba(109, 109, 110, 0.9);
+}
+
+.movie-modal-favorite.active {
+  color: #e50914;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .movie-modal-close {

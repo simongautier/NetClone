@@ -13,7 +13,12 @@ const menuItems: MenuItem[] = [
   { id: 4, label: "Ma liste", icon: "♡" },
 ];
 
-function Sidebar() {
+type SidebarProps = {
+  activeLabel: string;
+  onSelect: (label: string) => void;
+};
+
+function Sidebar({ activeLabel, onSelect }: SidebarProps) {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">N</div>
@@ -23,7 +28,12 @@ function Sidebar() {
           <button
             key={item.id}
             type="button"
-            className="sidebar-item"
+            className={
+              item.label === activeLabel
+                ? "sidebar-item active"
+                : "sidebar-item"
+            }
+            onClick={() => onSelect(item.label)}
           >
             <span className="sidebar-icon">{item.icon}</span>
             <span className="sidebar-label">{item.label}</span>

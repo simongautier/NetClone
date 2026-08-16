@@ -15,3 +15,7 @@ export type Movie = {
   runtime?: number;
   genres?: Genre[];
 };
+
+export type FavoriteKind = "movies" | "series";
+
+export type FavoriteMovie = Movie & { kind: FavoriteKind };

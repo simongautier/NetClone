@@ -1,12 +1,14 @@
-.app {
-  min-height: 100vh;
-  background-color: #111;
-  color: white;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.main-content {
+html,
+body,
+#root {
+  width: 100%;
   min-height: 100vh;
-  margin-left: 120px;
 }
 
 .hero {

@@ -4,9 +4,16 @@ import "./MovieModal.css";
 type MovieModalProps = {
   movie: Movie;
   onClose: () => void;
+  isFavorite: boolean;
+  onToggleFavorite: (movie: Movie) => void;
 };
 
-function MovieModal({ movie, onClose }: MovieModalProps) {
+function MovieModal({
+  movie,
+  onClose,
+  isFavorite,
+  onToggleFavorite,
+}: MovieModalProps) {
   return (
     <div className="movie-modal" onClick={onClose}>
       <article
@@ -43,9 +50,23 @@ function MovieModal({ movie, onClose }: MovieModalProps) {
             {movie.overview}
           </p>
 
-          <button type="button" className="movie-modal-play">
-            ▶ Lecture
-          </button>
+          <div className="movie-modal-actions">
+            <button type="button" className="movie-modal-play">
+              ▶ Lecture
+            </button>
+
+            <button
+              type="button"
+              className={
+                isFavorite
+                  ? "movie-modal-favorite active"
+                  : "movie-modal-favorite"
+              }
+              onClick={() => onToggleFavorite(movie)}
+            >
+              {isFavorite ? "♥ Dans ma liste" : "♡ Ajouter à ma liste"}
+            </button>
+          </div>
         </div>
       </article>
     </div>
