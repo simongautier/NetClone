@@ -6,6 +6,7 @@ import { getMovieDetails } from "./services/tmdb.js";
 import { getPopularSeries } from "./services/tmdb.js";
 import { getSeriesDetails } from "./services/tmdb.js";
 import { getWatchOptions } from "./services/tmdb.js";
+import { searchTitles } from "./services/tmdb.js";
 import cors from "cors";
 
 
@@ -113,6 +114,27 @@ app.get("/api/series/:id/watch", async (req, res) => {
 
     res.status(502).json({
       error: "Unable to fetch watch options from TMDB",
+    });
+  }
+});
+
+app.get("/api/search/:kind", async (req, res) => {
+  const kind = req.params.kind === "series" ? "tv" : "movie";
+  const query = typeof req.query.query === "string" ? req.query.query.trim() : "";
+
+  if (query === "") {
+    res.json([]);
+    return;
+  }
+
+  try {
+    const results = await searchTitles(kind, query);
+    res.json(results);
+  } catch (error) {
+    console.error(`Error searching TMDB for "${query}":`, error);
+
+    res.status(502).json({
+      error: "Unable to search TMDB",
     });
   }
 });

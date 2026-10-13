@@ -33,7 +33,11 @@ function displayName(filename: string) {
   return filename.replace(/^[0-9a-f]{8}-/, "");
 }
 
-function VideoLibrary() {
+type VideoLibraryProps = {
+  searchTerm: string;
+};
+
+function VideoLibrary({ searchTerm }: VideoLibraryProps) {
   const [url, setUrl] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [downloads, setDownloads] = useState<Download[]>([]);
@@ -92,6 +96,9 @@ function VideoLibrary() {
   }
 
   const activeDownloads = downloads.filter((download) => download.status !== "done");
+  const visibleVideos = videos.filter((video) =>
+    displayName(video.filename).toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <section className="video-library">
@@ -157,9 +164,11 @@ function VideoLibrary() {
 
       {videos.length === 0 ? (
         <p>Aucune vidéo pour l'instant.</p>
+      ) : visibleVideos.length === 0 ? (
+        <p>Aucune vidéo ne correspond à « {searchTerm} ».</p>
       ) : (
         <ul className="video-library-list">
-          {videos.map((video) => (
+          {visibleVideos.map((video) => (
             <li key={video.filename}>
               <button type="button" onClick={() => setPlaying(video.filename)}>
                 <span className="video-library-play">▶</span>

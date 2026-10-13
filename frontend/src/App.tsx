@@ -6,6 +6,7 @@ import HeroBanner from "./components/HeroBanner/HeroBanner";
 import MovieModal from "./components/MovieModal/MovieModal";
 import VideoLibrary from "./components/VideoLibrary/VideoLibrary";
 import WatchModal from "./components/WatchModal/WatchModal";
+import SearchBar from "./components/SearchBar/SearchBar";
 import { useFavorites } from "./hooks/useFavorites";
 
 import type { FavoriteKind, FavoriteMovie, Movie } from "./type/Movie";
@@ -16,6 +17,14 @@ const API_URL = "/api";
 
 type Category = "Accueil" | "Séries" | "Films" | "Ma liste" | "Mes vidéos";
 
+const SEARCH_PLACEHOLDERS: Record<Category, string> = {
+  Accueil: "Rechercher un film…",
+  Films: "Rechercher un film…",
+  Séries: "Rechercher une série…",
+  "Ma liste": "Rechercher dans ma liste…",
+  "Mes vidéos": "Rechercher dans mes vidéos…",
+};
+
 function App() {
   const [activeCategory, setActiveCategory] = useState<Category>("Accueil");
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -24,10 +33,14 @@ function App() {
   const [modalMovieKind, setModalMovieKind] = useState<FavoriteKind>("movies");
   const [watchTarget, setWatchTarget] = useState<{ movie: Movie; kind: FavoriteKind } | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<Movie[] | null>(null);
 
   const { favorites, isFavorite, toggleFavorite } = useFavorites();
 
   const resource: FavoriteKind = activeCategory === "Séries" ? "series" : "movies";
+  const query = searchTerm.trim();
+  // Catalogue pages search all of TMDB; the personal pages filter locally.
+  const searchesCatalogue = activeCategory !== "Ma liste" && activeCategory !== "Mes vidéos";
 
   function kindFor(movie: Movie): FavoriteKind {
     if (activeCategory === "Ma liste") {
@@ -82,13 +95,54 @@ function App() {
     loadMovies();
   }, [activeCategory, resource]);
 
-  const visibleMovies = activeCategory === "Ma liste" ? favorites : movies;
+  useEffect(() => {
+    setSearchResults(null);
 
-  const filteredMovies = visibleMovies.filter((movie) =>
-    movie.title
-      .toLowerCase()
-      .includes(searchTerm.trim().toLowerCase())
-  );
+    if (!searchesCatalogue || query === "") {
+      return;
+    }
+
+    const controller = new AbortController();
+
+    // Waits for a pause in typing instead of hitting TMDB on every key.
+    const timeout = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/search/${resource}?query=${encodeURIComponent(query)}`,
+          { signal: controller.signal }
+        );
+
+        if (!response.ok) {
+          throw new Error("Impossible d'effectuer la recherche");
+        }
+
+        setSearchResults(await response.json());
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("Erreur pendant la recherche :", error);
+          setSearchResults([]);
+        }
+      }
+    }, 350);
+
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [query, resource, searchesCatalogue]);
+
+  const isSearching = searchesCatalogue && query !== "" && searchResults === null;
+
+  const filteredMovies = searchesCatalogue
+    ? (query === "" ? movies : searchResults ?? [])
+    : favorites.filter((movie) =>
+        movie.title.toLowerCase().includes(query.toLowerCase())
+      );
+
+  function handleCategorySelect(category: Category) {
+    setActiveCategory(category);
+    setSearchTerm("");
+  }
 
   async function handleMovieSelect(movie: Movie) {
     const kind = kindFor(movie);
@@ -118,8 +172,8 @@ function App() {
   }
 
   function rowTitle() {
-    if (searchTerm.trim() !== "") {
-      return "Résultats de recherche";
+    if (query !== "") {
+      return `Résultats pour « ${query} »`;
     }
 
     if (activeCategory === "Séries") {
@@ -135,11 +189,18 @@ function App() {
 
   return (
     <div className="app">
-      <Sidebar activeLabel={activeCategory} onSelect={(label) => setActiveCategory(label as Category)} />
+      <Sidebar activeLabel={activeCategory} onSelect={(label) => handleCategorySelect(label as Category)} />
 
       <main className="main-content">
+        <SearchBar
+          value={searchTerm}
+          placeholder={SEARCH_PLACEHOLDERS[activeCategory]}
+          onChange={setSearchTerm}
+          overHero={activeCategory !== "Mes vidéos" && selectedMovie !== null}
+        />
+
         {activeCategory === "Mes vidéos" ? (
-          <VideoLibrary />
+          <VideoLibrary searchTerm={query} />
         ) : (
           <>
             {selectedMovie && (
@@ -149,28 +210,23 @@ function App() {
               />
             )}
 
-            <input
-              className="search-input"
-              type="text"
-              placeholder="Rechercher un film..."
-              value={searchTerm}
-              onChange={(event) =>
-                setSearchTerm(event.target.value)
-              }
-            />
 
             {activeCategory === "Ma liste" && favorites.length === 0 ? (
-              <p>Ta liste est vide pour l'instant.</p>
+              <p className="empty-message">Ta liste est vide pour l'instant.</p>
+            ) : isSearching ? (
+              <p className="empty-message">Recherche…</p>
             ) : filteredMovies.length > 0 ? (
               <MovieRow
-                title={activeCategory === "Ma liste" ? "Ma liste" : rowTitle()}
+                title={activeCategory === "Ma liste" && query === "" ? "Ma liste" : rowTitle()}
                 movies={filteredMovies}
                 onSelect={handleMovieSelect}
                 isFavorite={(movie) => isFavorite(movie.id, kindFor(movie))}
                 onToggleFavorite={(movie) => toggleFavorite(movie, kindFor(movie))}
               />
             ) : (
-              <p>Aucun film trouvé.</p>
+              <p className="empty-message">
+                {query !== "" ? `Aucun résultat pour « ${query} ».` : "Aucun film trouvé."}
+              </p>
             )}
 
             {modalMovie && (

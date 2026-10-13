@@ -283,7 +283,40 @@ async function getWatchOptions(
   };
 }
 
+async function searchTitles(
+  kind: "movie" | "tv",
+  query: string
+): Promise<TmdbMovie[]> {
+  const response = await fetch(
+    `${TMDB_API_URL}/search/${kind}?language=fr-FR&page=1&include_adult=false&query=${encodeURIComponent(query)}`,
+    {
+      headers: getHeaders(),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to search TMDB: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  // Titles without any artwork are mostly obscure entries; they would show
+  // up as blank cards in the row.
+  return data.results
+    .filter((item: TmdbMovie & TmdbSeries) => item.poster_path || item.backdrop_path)
+    .map((item: TmdbMovie & TmdbSeries) => ({
+      id: item.id,
+      title: kind === "movie" ? item.title : item.name,
+      overview: item.overview,
+      poster_path: buildImageUrl(item.poster_path, "w500"),
+      backdrop_path: buildImageUrl(item.backdrop_path, "original"),
+      release_date: (kind === "movie" ? item.release_date : item.first_air_date) ?? "",
+      vote_average: item.vote_average,
+    }));
+}
+
 export {
+  searchTitles,
   getPopularMovies,
   getMovieDetails,
   getPopularSeries,
