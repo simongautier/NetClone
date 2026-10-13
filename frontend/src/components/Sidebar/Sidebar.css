@@ -19,11 +19,21 @@
 
 .sidebar-logo {
   margin-bottom: 60px;
+  padding: 0;
+
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 
   color: #e50914;
   font-size: 4rem;
   font-weight: 900;
   line-height: 1;
+}
+
+.sidebar-logo:hover {
+  transform: scale(1.08);
 }
 
 .sidebar-navigation {

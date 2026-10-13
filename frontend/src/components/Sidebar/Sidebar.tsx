@@ -22,7 +22,17 @@ type SidebarProps = {
 function Sidebar({ activeLabel, onSelect }: SidebarProps) {
   return (
     <aside className="sidebar">
-      <div className="sidebar-logo">N</div>
+      <button
+        type="button"
+        className="sidebar-logo"
+        onClick={() => {
+          onSelect("Accueil");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        aria-label="Retour à l'accueil"
+      >
+        N
+      </button>
 
       <nav className="sidebar-navigation">
         {menuItems.map((item) => (
