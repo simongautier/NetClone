@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import MovieRow from "./components/MovieRow/MovieRow";
 import HeroBanner from "./components/HeroBanner/HeroBanner";
 import MovieModal from "./components/MovieModal/MovieModal";
+import VideoLibrary from "./components/VideoLibrary/VideoLibrary";
 import { useFavorites } from "./hooks/useFavorites";
 
 import type { FavoriteKind, FavoriteMovie, Movie } from "./type/Movie";
@@ -12,7 +13,7 @@ import "./App.css";
 
 const API_URL = "/api";
 
-type Category = "Accueil" | "Séries" | "Films" | "Ma liste";
+type Category = "Accueil" | "Séries" | "Films" | "Ma liste" | "Mes vidéos";
 
 function App() {
   const [activeCategory, setActiveCategory] = useState<Category>("Accueil");
@@ -35,7 +36,7 @@ function App() {
   }
 
   useEffect(() => {
-    if (activeCategory === "Ma liste") {
+    if (activeCategory === "Ma liste" || activeCategory === "Mes vidéos") {
       setSelectedMovie(null);
       return;
     }
@@ -135,41 +136,47 @@ function App() {
       <Sidebar activeLabel={activeCategory} onSelect={(label) => setActiveCategory(label as Category)} />
 
       <main className="main-content">
-        {selectedMovie && (
-          <HeroBanner movie={selectedMovie} />
-        )}
-
-        <input
-          className="search-input"
-          type="text"
-          placeholder="Rechercher un film..."
-          value={searchTerm}
-          onChange={(event) =>
-            setSearchTerm(event.target.value)
-          }
-        />
-
-        {activeCategory === "Ma liste" && favorites.length === 0 ? (
-          <p>Ta liste est vide pour l'instant.</p>
-        ) : filteredMovies.length > 0 ? (
-          <MovieRow
-            title={activeCategory === "Ma liste" ? "Ma liste" : rowTitle()}
-            movies={filteredMovies}
-            onSelect={handleMovieSelect}
-            isFavorite={(movie) => isFavorite(movie.id, kindFor(movie))}
-            onToggleFavorite={(movie) => toggleFavorite(movie, kindFor(movie))}
-          />
+        {activeCategory === "Mes vidéos" ? (
+          <VideoLibrary />
         ) : (
-          <p>Aucun film trouvé.</p>
-        )}
+          <>
+            {selectedMovie && (
+              <HeroBanner movie={selectedMovie} />
+            )}
 
-        {modalMovie && (
-          <MovieModal
-            movie={modalMovie}
-            onClose={() => setModalMovie(null)}
-            isFavorite={isFavorite(modalMovie.id, modalMovieKind)}
-            onToggleFavorite={(movie) => toggleFavorite(movie, modalMovieKind)}
-          />
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Rechercher un film..."
+              value={searchTerm}
+              onChange={(event) =>
+                setSearchTerm(event.target.value)
+              }
+            />
+
+            {activeCategory === "Ma liste" && favorites.length === 0 ? (
+              <p>Ta liste est vide pour l'instant.</p>
+            ) : filteredMovies.length > 0 ? (
+              <MovieRow
+                title={activeCategory === "Ma liste" ? "Ma liste" : rowTitle()}
+                movies={filteredMovies}
+                onSelect={handleMovieSelect}
+                isFavorite={(movie) => isFavorite(movie.id, kindFor(movie))}
+                onToggleFavorite={(movie) => toggleFavorite(movie, kindFor(movie))}
+              />
+            ) : (
+              <p>Aucun film trouvé.</p>
+            )}
+
+            {modalMovie && (
+              <MovieModal
+                movie={modalMovie}
+                onClose={() => setModalMovie(null)}
+                isFavorite={isFavorite(modalMovie.id, modalMovieKind)}
+                onToggleFavorite={(movie) => toggleFavorite(movie, modalMovieKind)}
+              />
+            )}
+          </>
         )}
       </main>
     </div>

@@ -1,4 +1,4 @@
 .env
 k8s/backend-secret.yaml
 node_modules/
-dist/
+dist/media/

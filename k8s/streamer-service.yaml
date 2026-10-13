@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: netflix-clone-streamer-service
+  namespace: netclone
+spec:
+  selector:
+    app: netflix-clone-streamer
+  ports:
+    - port: 3002
+      targetPort: 3002
+  type: ClusterIP

@@ -2,12 +2,27 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: netflix-clone-ingress
+  namespace: netclone
 spec:
   ingressClassName: nginx
   rules:
     - host: netflix.local
       http:
         paths:
+          - path: /api/downloads
+            pathType: Prefix
+            backend:
+              service:
+                name: netflix-clone-downloader-service
+                port:
+                  number: 3001
+          - path: /api/stream
+            pathType: Prefix
+            backend:
+              service:
+                name: netflix-clone-streamer-service
+                port:
+                  number: 3002
           - path: /api
             pathType: Prefix
             backend:

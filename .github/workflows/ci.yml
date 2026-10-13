@@ -10,6 +10,8 @@ env:
   REGISTRY: ghcr.io
   BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/netclone-backend
   FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/netclone-frontend
+  DOWNLOADER_IMAGE: ghcr.io/${{ github.repository_owner }}/netclone-downloader
+  STREAMER_IMAGE: ghcr.io/${{ github.repository_owner }}/netclone-streamer
 
 jobs:
   backend-build:
@@ -25,6 +27,40 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+
+  downloader-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: downloader
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: downloader/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+
+  streamer-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: streamer
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: streamer/package-lock.json
 
       - run: npm ci
       - run: npm run build
@@ -48,7 +84,7 @@ jobs:
       - run: npm run build
 
   docker-publish:
-    needs: [backend-build, frontend-build]
+    needs: [backend-build, downloader-build, streamer-build, frontend-build]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
@@ -63,6 +99,12 @@ jobs:
           - context: frontend
             dockerfile: frontend/dockerfile
             image: FRONTEND_IMAGE
+          - context: downloader
+            dockerfile: downloader/dockerfile
+            image: DOWNLOADER_IMAGE
+          - context: streamer
+            dockerfile: streamer/dockerfile
+            image: STREAMER_IMAGE
     steps:
       - uses: actions/checkout@v4
 

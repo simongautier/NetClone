@@ -1,0 +1,14 @@
+# Shared storage: the downloader writes videos here, the streamer reads them.
+# ReadWriteOnce is fine on a single-node cluster like Docker Desktop (all pods
+# land on the same node). A multi-node cluster would need ReadWriteMany.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: netflix-clone-media
+  namespace: netclone
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

@@ -2,7 +2,7 @@
   "name": "netclone",
   "private": true,
   "scripts": {
-    "dev": "concurrently -n backend,frontend -c blue,green \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+    "dev": "concurrently -n backend,downloader,streamer,frontend -c blue,magenta,yellow,green \"cd backend && npm run dev\" \"cd downloader && npm run dev\" \"cd streamer && npm run dev\" \"cd frontend && npm run dev\""
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

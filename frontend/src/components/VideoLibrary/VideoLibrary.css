@@ -1,0 +1,154 @@
+.video-library {
+  padding: 40px 48px;
+  max-width: 1000px;
+}
+
+.video-library-title {
+  margin: 32px 0 16px;
+  color: white;
+  font-size: 1.8rem;
+}
+
+.video-library-form {
+  display: flex;
+  gap: 12px;
+}
+
+.video-library-form input {
+  flex: 1;
+  padding: 12px 18px;
+
+  border: 1px solid #333;
+  border-radius: 50px;
+
+  background: #1c1c1c;
+  color: white;
+  font-size: 1rem;
+}
+
+.video-library-form button,
+.video-library-player-bar button {
+  padding: 12px 24px;
+
+  border: none;
+  border-radius: 50px;
+
+  background: #e50914;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.video-library-form button:hover,
+.video-library-player-bar button:hover {
+  background: #f6121d;
+}
+
+.video-library-error {
+  color: #ff6b6b;
+}
+
+.video-library-downloads,
+.video-library-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.video-library-downloads li {
+  display: grid;
+  grid-template-columns: 1fr 200px 60px;
+  align-items: center;
+  gap: 16px;
+
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: #1c1c1c;
+}
+
+.video-library-downloads li span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.video-library-downloads progress {
+  width: 100%;
+  accent-color: #e50914;
+}
+
+.video-library-list button {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+
+  padding: 14px 18px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  background: #1c1c1c;
+  color: white;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.video-library-list button:hover {
+  border-color: #444;
+  background: #262626;
+}
+
+.video-library-play {
+  color: #e50914;
+}
+
+.video-library-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.video-library-size {
+  color: #999;
+}
+
+.video-library-player {
+  overflow: hidden;
+  border-radius: 16px;
+  background: black;
+}
+
+.video-library-player video {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+}
+
+.video-library-player-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  background: #1c1c1c;
+}
+
+@media (max-width: 700px) {
+  .video-library {
+    padding: 24px 16px;
+  }
+
+  .video-library-form {
+    flex-direction: column;
+  }
+
+  .video-library-downloads li {
+    grid-template-columns: 1fr;
+  }
+}

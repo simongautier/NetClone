@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netflix-clone-streamer
+  namespace: netclone
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: netflix-clone-streamer
+  template:
+    metadata:
+      labels:
+        app: netflix-clone-streamer
+    spec:
+      containers:
+        - name: netflix-clone-streamer
+          image: ghcr.io/simongautier/netclone-streamer:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3002
+          env:
+            - name: MEDIA_DIR
+              value: /media
+          volumeMounts:
+            - name: media
+              mountPath: /media
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 5
+            periodSeconds: 15
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: netflix-clone-media

@@ -11,6 +11,7 @@ const menuItems: MenuItem[] = [
   { id: 2, label: "Séries", icon: "▣" },
   { id: 3, label: "Films", icon: "▶" },
   { id: 4, label: "Ma liste", icon: "♡" },
+  { id: 5, label: "Mes vidéos", icon: "⬇" },
 ];
 
 type SidebarProps = {
