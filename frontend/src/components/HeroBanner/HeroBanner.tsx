@@ -3,9 +3,10 @@ import "./HeroBanner.css";
 
 type HeroBannerProps = {
   movie: Movie;
+  onPlay: (movie: Movie) => void;
 };
 
-function HeroBanner({ movie }: HeroBannerProps) {
+function HeroBanner({ movie, onPlay }: HeroBannerProps) {
   return (
     <section
       className="hero-banner"
@@ -27,7 +28,7 @@ function HeroBanner({ movie }: HeroBannerProps) {
         </p>
 
         <div className="hero-actions">
-          <button type="button" className="play-button">
+          <button type="button" className="play-button" onClick={() => onPlay(movie)}>
             ▶ Lecture
           </button>
 

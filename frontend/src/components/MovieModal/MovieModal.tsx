@@ -6,6 +6,7 @@ type MovieModalProps = {
   onClose: () => void;
   isFavorite: boolean;
   onToggleFavorite: (movie: Movie) => void;
+  onPlay: (movie: Movie) => void;
 };
 
 function MovieModal({
@@ -13,6 +14,7 @@ function MovieModal({
   onClose,
   isFavorite,
   onToggleFavorite,
+  onPlay,
 }: MovieModalProps) {
   return (
     <div className="movie-modal" onClick={onClose}>
@@ -51,7 +53,11 @@ function MovieModal({
           </p>
 
           <div className="movie-modal-actions">
-            <button type="button" className="movie-modal-play">
+            <button
+              type="button"
+              className="movie-modal-play"
+              onClick={() => onPlay(movie)}
+            >
               ▶ Lecture
             </button>
 

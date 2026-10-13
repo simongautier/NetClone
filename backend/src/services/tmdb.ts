@@ -163,4 +163,130 @@ async function getMovieDetails(id: number): Promise<TmdbMovie> {
   };
 }
 
-export { getPopularMovies, getMovieDetails, getPopularSeries, getSeriesDetails };
+type TmdbProvider = {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string | null;
+  display_priority: number;
+};
+
+type TmdbRegionProviders = {
+  link?: string | undefined;
+  flatrate?: TmdbProvider[] | undefined;
+  free?: TmdbProvider[] | undefined;
+  ads?: TmdbProvider[] | undefined;
+  rent?: TmdbProvider[] | undefined;
+  buy?: TmdbProvider[] | undefined;
+};
+
+type TmdbVideo = {
+  key: string;
+  name: string;
+  site: string;
+  type: string;
+  official: boolean;
+};
+
+type WatchProvider = {
+  id: number;
+  name: string;
+  logo: string | null;
+  url: string;
+};
+
+type WatchOptions = {
+  region: string;
+  link: string | null;
+  subscription: WatchProvider[];
+  free: WatchProvider[];
+  rent: WatchProvider[];
+  buy: WatchProvider[];
+  trailers: { key: string; name: string; type: string }[];
+};
+
+// TMDB only gives one link per title (its JustWatch page), not a deep link per
+// service, so well-known services get a search URL for the title instead.
+const PROVIDER_SEARCH_URLS: [RegExp, (query: string) => string][] = [
+  [/netflix/i, (q) => `https://www.netflix.com/search?q=${q}`],
+  [/amazon|prime video/i, (q) => `https://www.primevideo.com/search?phrase=${q}`],
+  [/disney/i, (q) => `https://www.disneyplus.com/search?q=${q}`],
+  [/apple tv/i, (q) => `https://tv.apple.com/search?term=${q}`],
+  [/google play/i, (q) => `https://play.google.com/store/search?q=${q}&c=movies`],
+  [/youtube/i, (q) => `https://www.youtube.com/results?search_query=${q}`],
+];
+
+function buildProviderUrl(providerName: string, title: string, fallback: string) {
+  const query = encodeURIComponent(title);
+  const match = PROVIDER_SEARCH_URLS.find(([pattern]) => pattern.test(providerName));
+
+  return match ? match[1](query) : fallback;
+}
+
+async function getWatchOptions(
+  kind: "movie" | "tv",
+  id: number,
+  title: string,
+  region = "FR"
+): Promise<WatchOptions> {
+  const [providersResponse, videosResponse] = await Promise.all([
+    fetch(`${TMDB_API_URL}/${kind}/${id}/watch/providers`, {
+      headers: getHeaders(),
+    }),
+    fetch(
+      `${TMDB_API_URL}/${kind}/${id}/videos?language=fr-FR&include_video_language=fr,en,null`,
+      {
+        headers: getHeaders(),
+      }
+    ),
+  ]);
+
+  if (!providersResponse.ok || !videosResponse.ok) {
+    throw new Error(
+      `Failed to fetch watch options from TMDB: ${providersResponse.status}/${videosResponse.status}`
+    );
+  }
+
+  const providersData = await providersResponse.json();
+  const videosData = await videosResponse.json();
+
+  const regionProviders: TmdbRegionProviders = providersData.results?.[region] ?? {};
+  const link = regionProviders.link ?? null;
+  const fallbackUrl = link ?? `https://www.themoviedb.org/${kind}/${id}/watch`;
+
+  const toProviders = (providers: TmdbProvider[] = []): WatchProvider[] =>
+    [...providers]
+      .sort((a, b) => a.display_priority - b.display_priority)
+      .map((provider) => ({
+        id: provider.provider_id,
+        name: provider.provider_name,
+        logo: buildImageUrl(provider.logo_path, "w92"),
+        url: buildProviderUrl(provider.provider_name, title, fallbackUrl),
+      }));
+
+  const trailers = (videosData.results as TmdbVideo[])
+    .filter((video) => video.site === "YouTube" && ["Trailer", "Teaser"].includes(video.type))
+    .sort(
+      (a, b) =>
+        Number(b.type === "Trailer") - Number(a.type === "Trailer") ||
+        Number(b.official) - Number(a.official)
+    )
+    .map((video) => ({ key: video.key, name: video.name, type: video.type }));
+
+  return {
+    region,
+    link,
+    subscription: toProviders(regionProviders.flatrate),
+    free: toProviders([...(regionProviders.free ?? []), ...(regionProviders.ads ?? [])]),
+    rent: toProviders(regionProviders.rent),
+    buy: toProviders(regionProviders.buy),
+    trailers,
+  };
+}
+
+export {
+  getPopularMovies,
+  getMovieDetails,
+  getPopularSeries,
+  getSeriesDetails,
+  getWatchOptions,
+};

@@ -19,3 +19,20 @@ export type Movie = {
 export type FavoriteKind = "movies" | "series";
 
 export type FavoriteMovie = Movie & { kind: FavoriteKind };
+
+export type WatchProvider = {
+  id: number;
+  name: string;
+  logo: string | null;
+  url: string;
+};
+
+export type WatchOptions = {
+  region: string;
+  link: string | null;
+  subscription: WatchProvider[];
+  free: WatchProvider[];
+  rent: WatchProvider[];
+  buy: WatchProvider[];
+  trailers: { key: string; name: string; type: string }[];
+};

@@ -5,6 +5,7 @@ import MovieRow from "./components/MovieRow/MovieRow";
 import HeroBanner from "./components/HeroBanner/HeroBanner";
 import MovieModal from "./components/MovieModal/MovieModal";
 import VideoLibrary from "./components/VideoLibrary/VideoLibrary";
+import WatchModal from "./components/WatchModal/WatchModal";
 import { useFavorites } from "./hooks/useFavorites";
 
 import type { FavoriteKind, FavoriteMovie, Movie } from "./type/Movie";
@@ -21,6 +22,7 @@ function App() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [modalMovie, setModalMovie] = useState<Movie | null>(null);
   const [modalMovieKind, setModalMovieKind] = useState<FavoriteKind>("movies");
+  const [watchTarget, setWatchTarget] = useState<{ movie: Movie; kind: FavoriteKind } | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const { favorites, isFavorite, toggleFavorite } = useFavorites();
@@ -141,7 +143,10 @@ function App() {
         ) : (
           <>
             {selectedMovie && (
-              <HeroBanner movie={selectedMovie} />
+              <HeroBanner
+                movie={selectedMovie}
+                onPlay={(movie) => setWatchTarget({ movie, kind: resource })}
+              />
             )}
 
             <input
@@ -174,6 +179,15 @@ function App() {
                 onClose={() => setModalMovie(null)}
                 isFavorite={isFavorite(modalMovie.id, modalMovieKind)}
                 onToggleFavorite={(movie) => toggleFavorite(movie, modalMovieKind)}
+                onPlay={(movie) => setWatchTarget({ movie, kind: modalMovieKind })}
+              />
+            )}
+
+            {watchTarget && (
+              <WatchModal
+                movie={watchTarget.movie}
+                kind={watchTarget.kind}
+                onClose={() => setWatchTarget(null)}
               />
             )}
           </>

@@ -5,6 +5,7 @@ import { getPopularMovies } from "./services/tmdb.js";
 import { getMovieDetails } from "./services/tmdb.js";
 import { getPopularSeries } from "./services/tmdb.js";
 import { getSeriesDetails } from "./services/tmdb.js";
+import { getWatchOptions } from "./services/tmdb.js";
 import cors from "cors";
 
 
@@ -48,6 +49,26 @@ app.get("/api/movies/:id", async (req, res) => {
   }
 });
 
+app.get("/api/movies/:id/watch", async (req, res) => {
+  const id = Number(req.params.id);
+  const title = typeof req.query.title === "string" ? req.query.title : "";
+  const region =
+    typeof req.query.region === "string" && /^[A-Z]{2}$/.test(req.query.region)
+      ? req.query.region
+      : "FR";
+
+  try {
+    const watchOptions = await getWatchOptions("movie", id, title, region);
+    res.json(watchOptions);
+  } catch (error) {
+    console.error(`Error fetching watch options for movie ID ${id}:`, error);
+
+    res.status(502).json({
+      error: "Unable to fetch watch options from TMDB",
+    });
+  }
+});
+
 app.get("/api/series", async (_req, res) => {
   try {
     const series = await getPopularSeries();
@@ -72,6 +93,26 @@ app.get("/api/series/:id", async (req, res) => {
 
     res.status(502).json({
       error: "Unable to fetch series details from TMDB",
+    });
+  }
+});
+
+app.get("/api/series/:id/watch", async (req, res) => {
+  const id = Number(req.params.id);
+  const title = typeof req.query.title === "string" ? req.query.title : "";
+  const region =
+    typeof req.query.region === "string" && /^[A-Z]{2}$/.test(req.query.region)
+      ? req.query.region
+      : "FR";
+
+  try {
+    const watchOptions = await getWatchOptions("tv", id, title, region);
+    res.json(watchOptions);
+  } catch (error) {
+    console.error(`Error fetching watch options for series ID ${id}:`, error);
+
+    res.status(502).json({
+      error: "Unable to fetch watch options from TMDB",
     });
   }
 });
