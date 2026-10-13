@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: netflix-clone-backend-service
+  namespace: netclone
 spec:
   selector:
     app: netflix-clone-backend
